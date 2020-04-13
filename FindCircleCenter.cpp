@@ -1,17 +1,17 @@
-#pragma comment(lib, "Ws2_32.lib")  //連結此lib
+#pragma comment(lib, "Ws2_32.lib")  //connect this lib
 
-//C++基本程式庫
+//C++ Basic Lib
 #include<iostream>
 #include<math.h>
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <time.h>
-//Socket程式庫
+//Socket Lib
 #include <Ws2tcpip.h>
 #include <windows.h>
 #include <WinSock2.h>
-//OpenCV相關程式庫
+//OpenCV Lib
 #include <opencv2/imgproc.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/dnn.hpp>
@@ -28,7 +28,7 @@ using namespace cv;
 
 int main() {
 	//************************************//
-	//            OpenCV設定              //
+	//          OpenCV setting            //
 	//************************************//	
 
 
@@ -63,40 +63,40 @@ int main() {
 
 
 
-	//設定相機 && 存影像的frame
+	//setting camera && viedo frame
 	VideoCapture video(0);
 	Mat frame, Gray_frame, BW_frame, roi_frame;
 
-	//未成功開啟相機
+	//fail to open camera
 	if (!video.isOpened()) {
-		cout << "\n開啟相機失敗\n";
+		cout << "\nfail to read camera\n";
 		return 1;
 	}
 
 	video >> frame;
 
 	if (!video.read(frame)) {
-		cout << "\n擷取畫面失敗\n";
+		cout << "\nfail to read camera\n";
 	}
 
 
-	//       input,output, 轉換方式
-	cvtColor(frame, Gray_frame, COLOR_BGR2GRAY);//將frame之圖像轉為灰階
+	//       input, output    ,Conversion method
+	cvtColor(frame, Gray_frame, COLOR_BGR2GRAY);//   transfer to gray
 	//        
 	//adaptiveThreshold(Gray_frame,BW_frame,255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY,201,0);
 	threshold(Gray_frame, BW_frame, 130, 255, THRESH_BINARY);
 
-	//以double形式用2D矩形template
+	//use double to store rectangle template
 	Rect2d roi, roi_init;
 
-	roi = selectROI("想追蹤之物品", BW_frame);
+	roi = selectROI("target", BW_frame);
 	//quit if ROI was not selected
 	if (roi.width == 0 || roi.height == 0)
 		return 0;
 
-	destroyWindow("想追蹤之物品");
+	destroyWindow("target");
 
-	// create a tracker object KCF ,MIL, TLD(lag、大小不定，但可解決problem)
+	// create a tracker object KCF ,MIL, TLD
 	Ptr<TrackerTLD> tracker = TrackerTLD::create();
 
 
@@ -107,39 +107,39 @@ int main() {
 
 
 	//************************************//
-	//          While(1)迴圈              //
+	//          While(1)                  //
 	//************************************//	
 
 	while (1) {
 
 		video >> frame;
 
-		cvtColor(frame, Gray_frame, COLOR_BGR2GRAY);//將frame之圖像轉為灰階
+		cvtColor(frame, Gray_frame, COLOR_BGR2GRAY);//transfer to gray
 		threshold(Gray_frame, BW_frame, 130, 255, THRESH_BINARY);
 		
 
 		if (!video.read(Gray_frame)) {
-			cout << "\n擷取畫面失敗\n";
+			cout << "\nfail to read camera\n";
 		}
 
-		// 更新tracker 找到目標新位置的邊界   tracking:判斷是否抓到
+		// update tracker to find target   tracking: it is caught or not
 		tracking = tracker->update(frame, roi);
 
 		// draw the tracked object
-		//		  input     ,範圍, 邊框顏色         ,邊框粗度 ,線型
+		//		  input,range, color of rim          ,Thickness of rim , type of line
 		rectangle(frame, roi, Scalar(255, 0, 0), 2       , 1);
 
-		//目前追蹤物位置
+		//target position(now)
 		width_S = roi.x;
 		width = roi.width;
 		height_S = roi.y;
 		height = roi.height;
 
-	    //在履帶中時
+	    //it is in workspace
 		if (height_S < 210 && width_S>226 && width_S < 396) {
 			
-			//目標物中心
-			for (int y = height_S ; y <= height_S + height; y++) {//每次讀一列
+			//center of target
+			for (int y = height_S ; y <= height_S + height; y++) {
 				for (int x = width_S; x <=width_S + width + 1; x++) {
 					if (y < 0||x<0)
 						break;
@@ -159,7 +159,7 @@ int main() {
 					}
 				}
 
-				if (last_Diameter == 0)//給初始值
+				if (last_Diameter == 0)//init
 					last_Diameter = judge_right - judge_left;
 
 				if ((last_Diameter - (judge_right - judge_left)) > 0) {
@@ -183,10 +183,10 @@ int main() {
 				}
 			}
 
-			//物體在履帶中移動時，輸出座標給PY
+			//when it move, give data to PY
 			if (abs(temp_height_M - height_M) >100 && get_center&&  height_M>0) {
 
-				t1 = time(0);//計時開始
+				t1 = time(0);// Timing begins
 
 				distance = temp_height_M - height_M;
 				time_interval = t1-t2 ;   //ms -> s
@@ -239,7 +239,7 @@ int main() {
 		}
 
 
-		cv::imshow("追蹤中", frame);
+		cv::imshow("tracking ", frame);
 		cv::imshow("BW_frame", BW_frame);
 		//quit on ESC button
 		if (waitKey(1) == 27) {
