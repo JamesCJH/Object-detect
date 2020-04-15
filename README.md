@@ -22,17 +22,14 @@
 ## 座標系轉換:  
 ![Image description](https://github.com/JamesCJH/Object-detect/blob/master/picture_in_Readme/coordinate%20conversion/coordinate%20conversion.png "coordinate conversion")  
   
-#### Solution：二維座標的縮放+平移  
-
+#### Solution：二維座標的縮放+平移    
 1.  
 因為是要將影像座標系(pixel)-->控制器座標系(0.01 mm)  
 ![Image description](https://github.com/JamesCJH/Object-detect/blob/master/picture_in_Readme/coordinate%20conversion/formula_pixelTomm.png "formula_pixelTomm")  
-
 2.   
 (**222**,0)-->(**0**,11550) 不考慮縮放下可得    
 ![Image description](https://github.com/JamesCJH/Object-detect/blob/master/picture_in_Readme/coordinate%20conversion/X%20scaling%20ratio%201.png "X scaling ratio 1")   
 結合(1-2)和(1-3)得(1-4)得到  ![Image description](https://github.com/JamesCJH/Object-detect/blob/master/picture_in_Readme/coordinate%20conversion/X%20scaling%20ratio%202.png "X scaling ratio 2")  
-
 3.  
 (222,**0**)-->(0,**11550**) 由於Y為0，不好做計算，所以先由控制器推至相機，再做回推。  
 (0,**11550**)--> (222,**0**)不考慮縮放下可得：  
@@ -42,4 +39,5 @@
 移項後：  
 ![Image description](https://github.com/JamesCJH/Object-detect/blob/master/picture_in_Readme/coordinate%20conversion/Y%20scaling%20ratio%203.png "Y scaling ratio 3")  
 
-將結果寫成一轉換矩陣：  ![Image description](https://github.com/JamesCJH/Object-detect/blob/master/picture_in_Readme/coordinate%20conversion/Transition%20matrix.png "Transition matrix")
+將結果寫成一轉換矩陣：  
+![Image description](https://github.com/JamesCJH/Object-detect/blob/master/picture_in_Readme/coordinate%20conversion/Transition%20matrix.png "Transition matrix")
