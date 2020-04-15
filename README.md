@@ -1,9 +1,12 @@
 # Object-detect
+## 如何得到中心點
 ![coordinate](https://github.com/JamesCJH/Object-detect/blob/master/picture_in_Readme/coordinate.png "coordinate")  
 
 ### *所求：目標物中心點(width_M ,height_M)* 
 ### *已知：圖形最左上點(width_S ,height_S)、圖形長&寬 height & width*  
       
+
+
 #### Solution：  
     1. 將輸入圖二值化-->BW_frame  
 
@@ -13,11 +16,10 @@
 
     4. last_Diameter = judge_right - judge_left  
        temp_Diameter的值會逐漸變大，到達圓之直徑為最大值，之後逐漸變小，如下圖所示。
-![temp_diameter](https://github.com/JamesCJH/Object-detect/blob/master/picture_in_Readme/temp_diameter.png "temp_diameter")  
 
 
 
-### 座標系轉換:  
+## 座標系轉換:  
 ![Image description](https://github.com/JamesCJH/Object-detect/blob/master/picture_in_Readme/coordinate%20conversion/coordinate%20conversion.png "coordinate conversion")  
   
 Solution：二維座標的縮放+平移  
